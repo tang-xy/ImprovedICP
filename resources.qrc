@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/improved_ICP" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
