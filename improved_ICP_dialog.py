@@ -23,9 +23,11 @@
 """
 
 import os
+import sys
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QFileDialog
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'improved_ICP_dialog_base.ui'))
@@ -41,3 +43,36 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+
+    def setupQgisUI(self, iface):
+        """动态加载qgis相关配置"""
+        canvas = iface.mapCanvas()
+        layerList = canvas.layers()
+        self.TargetName.addItem("")
+        for layer in layerList:
+            self.TargetName.addItem(layer.name())
+
+    def on_TargetName_currentIndexChanged(self, layerName):
+        """设置其他控件可用性随Targrt变化"""
+        if layerName != '' and layerName != 0:
+            self.SourceName.setEnabled(True)
+            self.OutputName.setEnabled(True)
+            self.SelectOutputPath.setEnabled(True)
+        if layerName == '':
+            self.SourceName.setEnabled(False)
+            self.OutputName.setEnabled(False)
+            self.SelectOutputPath.setEnabled(False)
+    
+    def on_SelectOutputPath_clicked(self):
+        """保存图片"""
+        fileName = QFileDialog.getSaveFileName(self,'创建bmp图片并保存',os.path.dirname(__file__),r'bmp(*.bmp)')
+        if fileName[0] == ' ':
+            pass
+        else :
+            self.OutputName.setText(fileName[0])
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    tetris = ImprovedICPDialog()
+    tetris.show()
+    sys.exit(app.exec_())

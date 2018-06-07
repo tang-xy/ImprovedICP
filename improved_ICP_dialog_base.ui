@@ -1,33 +1,113 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>ImprovedICPDialogBase</class>
- <widget class="QDialog" name="ImprovedICPDialogBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="ImprovedICPDialogBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>726</width>
+    <height>534</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>ImprovedICP</string>
   </property>
-  <widget class="QDialogButtonBox" name="button_box" >
-   <property name="geometry" >
-    <rect>
-     <x>30</x>
-     <y>240</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons" >
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="0">
+      <widget class="QDialogButtonBox" name="button_box">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QGroupBox" name="ConsoleBox">
+       <property name="title">
+        <string>console</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" rowspan="4">
+      <widget class="QGroupBox" name="PicBox">
+       <property name="title">
+        <string>map</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QGroupBox" name="ExtraBox">
+       <property name="title">
+        <string>advanced options</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QGroupBox" name="BaseBox">
+       <property name="title">
+        <string>base options</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="TargetText">
+            <property name="text">
+             <string>target map</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>output map</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="SourceText">
+            <property name="text">
+             <string>source map</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="OutputName">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QPushButton" name="SelectOutputPath">
+            <property name="text">
+             <string>选择路径</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QComboBox" name="SourceName">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QComboBox" name="TargetName"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections>
@@ -37,13 +117,13 @@
    <receiver>ImprovedICPDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="source_label" >
-     <x>248</x>
-     <y>254</y>
+    <hint type="sourcelabel">
+     <x>10</x>
+     <y>501</y>
     </hint>
-    <hint type="destination_label" >
-     <x>157</x>
-     <y>274</y>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
     </hint>
    </hints>
   </connection>
@@ -53,13 +133,13 @@
    <receiver>ImprovedICPDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="source_label" >
-     <x>316</x>
-     <y>260</y>
+    <hint type="sourcelabel">
+     <x>10</x>
+     <y>501</y>
     </hint>
-    <hint type="destination_label" >
-     <x>286</x>
-     <y>274</y>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
     </hint>
    </hints>
   </connection>

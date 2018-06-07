@@ -63,7 +63,6 @@ class ImprovedICP:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = ImprovedICPDialog()
-
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&ImprovedICP')
@@ -185,6 +184,7 @@ class ImprovedICP:
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
+        self.dlg.setupQgisUI(self.iface)
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
