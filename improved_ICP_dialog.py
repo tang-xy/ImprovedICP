@@ -27,7 +27,13 @@ import sys
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtGui import QPixmap
+
+if __name__ == 'ImprovedICP.improved_ICP_dialog':
+    from qgis._core import QgsRasterLayer
+
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'improved_ICP_dialog_base.ui'))
@@ -46,18 +52,39 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def setupQgisUI(self, iface):
         """动态加载qgis相关配置"""
+
+        self.TMap.setScaledContents(True)
+
+        #获取图层
         canvas = iface.mapCanvas()
         layerList = canvas.layers()
-        self.TargetName.addItem("")
+
+        #清除原有列表
+        self.TargetName.clear()
+        self.SourceName.clear()
+
+        #添加基础选项中图层下拉菜单
+        self.TargetName.addItem('')
+        self.SourceName.addItem('')
         for layer in layerList:
-            self.TargetName.addItem(layer.name())
+            if isinstance(layer,QgsRasterLayer):
+                self.TargetName.addItem(layer.name())
+                self.SourceName.addItem(layer.name())
 
     def on_TargetName_currentIndexChanged(self, layerName):
-        """设置其他控件可用性随Targrt变化"""
+        """设置其他控件可用性随Targrt变化
+           设置选中目标图层后相应
+           重绘图片大小
+        """
         if layerName != '' and layerName != 0:
             self.SourceName.setEnabled(True)
             self.OutputName.setEnabled(True)
             self.SelectOutputPath.setEnabled(True)
+            self.pixmap = QPixmap(':/plugins/improved_ICP/saveas.PNG')
+            #self.fitPixmap = pixmap.scaled(50, 50,aspectRatioMode = QtCore.Qt.KeepAspectRatio)#1 = Qtcore.Qt.KeepAspectRatio
+            self.TMap.resize(150,self.pixmap.height()/self.pixmap.width()*150)
+            self.TMap.move(self.PicBox.width()/2-self.TMap.width()/2,self.PicBox.height()/2-self.TMap.height()/2)
+            self.TMap.setPixmap(self.pixmap)
         if layerName == '':
             self.SourceName.setEnabled(False)
             self.OutputName.setEnabled(False)

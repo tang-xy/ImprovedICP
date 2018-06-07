@@ -16,37 +16,6 @@
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="3" column="0">
-      <widget class="QDialogButtonBox" name="button_box">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QGroupBox" name="ConsoleBox">
-       <property name="title">
-        <string>console</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" rowspan="4">
-      <widget class="QGroupBox" name="PicBox">
-       <property name="title">
-        <string>map</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QGroupBox" name="ExtraBox">
-       <property name="title">
-        <string>advanced options</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="0">
       <widget class="QGroupBox" name="BaseBox">
        <property name="title">
@@ -81,10 +50,16 @@
             <property name="enabled">
              <bool>false</bool>
             </property>
+            <property name="text">
+             <string/>
+            </property>
            </widget>
           </item>
           <item row="2" column="2">
            <widget class="QPushButton" name="SelectOutputPath">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>选择路径</string>
             </property>
@@ -103,6 +78,62 @@
          </layout>
         </item>
        </layout>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QDialogButtonBox" name="button_box">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QGroupBox" name="ConsoleBox">
+       <property name="title">
+        <string>console</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" rowspan="4">
+      <widget class="QGroupBox" name="PicBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="baseSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>map</string>
+       </property>
+       <widget class="QLabel" name="TMap">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>160</y>
+          <width>261</width>
+          <height>150</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QGroupBox" name="ExtraBox">
+       <property name="title">
+        <string>advanced options</string>
+       </property>
       </widget>
      </item>
     </layout>
