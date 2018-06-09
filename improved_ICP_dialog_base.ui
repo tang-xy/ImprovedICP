@@ -61,7 +61,7 @@
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>选择路径</string>
+             <string>path select</string>
             </property>
            </widget>
           </item>
@@ -127,6 +127,19 @@
          <string/>
         </property>
        </widget>
+       <widget class="QLabel" name="SMap">
+        <property name="geometry">
+         <rect>
+          <x>150</x>
+          <y>110</y>
+          <width>54</width>
+          <height>12</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </widget>
      </item>
      <item row="2" column="0">
@@ -175,4 +188,7 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>slot1()</slot>
+ </slots>
 </ui>
