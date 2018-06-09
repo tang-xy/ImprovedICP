@@ -48,6 +48,8 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(ImprovedICPDialog, self).__init__(parent)
+        self.leftPressed = False
+        self.rightPressed = False
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -59,6 +61,7 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
         """动态加载qgis相关配置"""
 
         self.TMap.setScaledContents(True)
+        self.SMap.setScaledContents(True)
         self.iface = iface
 
         #获取图层
@@ -95,19 +98,19 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
         canvas = self.iface.mapCanvas()
         layerList = canvas.layers()
         extent = layerList[index].extent()
-        viewPort = QgsRasterViewPort()
-        viewPort.mBottomRightPoint = QgsPointXY(-100,-100)
-        viewPort.mTopLeftPoint = QgsPointXY(100,100)
         if MOOD == 'test':
             self.narray = cv2.imread("D:\\Desktop\\TM\\bm.jpg")
             img=cv2.cvtColor(self.narray,cv2.COLOR_BGRA2BGR)
         else:
             self.narray = self.getArrayfromLayer(layerList[index])
             img=self.narray.astype(np.float32)
-            img=cv2.cvtColor(img,cv2.COLOR_BGRA2BGR)
+            img2=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+            cv2.imwrite("D:\\Desktop\\bm.jpg",img2)
+            img3 = cv2.imread("D:\\Desktop\\bm.jpg")
+            img=cv2.cvtColor(img3,cv2.COLOR_BGRA2BGR)
         img2=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
         _image = QImage(img2[:],img2.shape[1], img2.shape[0],(img2.shape[1]* 3)/4 * 4, QImage.Format_RGB888)
-        cv2.imwrite("D:\\Desktop\\bm.jpg",img2)
+        
         return _image
 
     def on_TargetName_currentIndexChanged(self, layerName):
@@ -122,18 +125,18 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
             self.OutputName.setEnabled(True)
             self.SelectOutputPath.setEnabled(True)
             image = self.getQimagebyIndex(layerName - 1)
-            self.pixmap  = QPixmap.fromImage(image)
+            self.Tpixmap  = QPixmap.fromImage(image)
             #self.fitPixmap = pixmap.scaled(50, 50,aspectRatioMode = QtCore.Qt.KeepAspectRatio)#1 = Qtcore.Qt.KeepAspectRatio
-            self.TMap.resize(150,self.pixmap.height()/self.pixmap.width()*150)
+            self.TMap.resize(150,self.Tpixmap.height()/self.Tpixmap.width()*150)
             self.TMap.move(self.PicBox.width()/2-self.TMap.width()/2,self.PicBox.height()/2-self.TMap.height()/2)
-            self.TMap.setPixmap(self.pixmap)
+            self.TMap.setPixmap(self.Tpixmap)
         if layerName == 0:
             self.SourceName.setEnabled(False)
             self.OutputName.setEnabled(False)
             self.SelectOutputPath.setEnabled(False)
             self.OutputName.setText('')
-            self.pixmap = QPixmap(0,0)
-            self.TMap.setPixmap(self.pixmap)
+            self.Tpixmap = QPixmap(0,0)
+            self.TMap.setPixmap(self.Tpixmap)
 
     def on_SourceName_currentIndexChanged(self, layerName):
         """绘制源图片"""
@@ -143,14 +146,13 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
             image = self.getQimagebyIndex(layerName - 1)
             self.Spixmap  = QPixmap.fromImage(image)
             #self.fitPixmap = pixmap.scaled(50, 50,aspectRatioMode = QtCore.Qt.KeepAspectRatio)#1 = Qtcore.Qt.KeepAspectRatio
-            self.SMap.resize(150,self.pixmap.height()/self.pixmap.width()*150)
+            self.SMap.resize(150,self.Spixmap.height()/self.Spixmap.width()*150)
             self.SMap.move(self.PicBox.width()/2,self.PicBox.height()/2)
-            self.SMap.setPixmap(self.pixmap)
+            self.SMap.setPixmap(self.Spixmap)
         if layerName == 0:
-            self.pixmap = QPixmap(0,0)
-            self.TMap.setPixmap(self.pixmap)
+            self.Spixmap = QPixmap(0,0)
+            self.SMap.setPixmap(self.Spixmap)
             
-    
     def on_SelectOutputPath_clicked(self, bol = 2):
         """保存图片"""
         if bol == 2:
@@ -161,13 +163,31 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
         else :
             self.OutputName.setText(fileName[0])
 
+    def mousePressEvent(self,event):
+        child = self.childAt(event.pos())
+        if child != self.SMap:
+            return
+        if(event.button() == QtCore.Qt.LeftButton):
+            self.leftPressed = True
+            self.pressPos = event.pos() - self.SMap.pos()
+        
+    def mouseMoveEvent(self,event):
+        if self.leftPressed != True or self.rightPressed != True:
+            return
+        #self.SMap.move
+        self.SMap.move(event.pos() - self.pressPos)
+
+    def mouseReleaseEvent(self,event):
+        child = self.childAt(event.pos())
+        if child != self.SMap:
+            return
+        if(event.button() == QtCore.Qt.LeftButton):
+            self.leftPressed = False
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     tetris = ImprovedICPDialog()
-    narray = cv2.imread("D:\\Desktop\\TM\\bm.jpg")
-    #img=img.astype(np.float32)
-    #img=cv2.cvtColor(self.narray,cv2.COLOR_BGRA2BGR)
-    img2=cv2.cvtColor(narray,cv2.COLOR_BGR2RGB)
+    tetris.SMap.resize(150,150)
     tetris.show()
     
     sys.exit(app.exec_())
