@@ -33,7 +33,7 @@ from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtGui import QPixmap,QImage,QColor,QPainter
+from PyQt5.QtGui import QPixmap,QImage,QColor,QPainter,QPalette
 
 if __name__ == 'ImprovedICP.improved_ICP_dialog':
     from qgis._core import QgsRasterLayer,QgsRasterViewPort,QgsPointXY,QgsRaster
@@ -43,6 +43,29 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'improved_ICP_dialog_base.ui'))
 MOOD = "test"
 
+def rotate_bound(image, angle):  
+    # grab the dimensions of the image and then determine the  
+    # center  
+    (h, w) = image.shape[:2]  
+    (cX, cY) = (w // 2, h // 2)  
+  
+    # grab the rotation matrix (applying the negative of the  
+    # angle to rotate clockwise), then grab the sine and cosine  
+    # (i.e., the rotation components of the matrix)  
+    M = cv2.getRotationMatrix2D((cX, cY), -angle, 1.0)  
+    cos = np.abs(M[0, 0])  
+    sin = np.abs(M[0, 1])  
+  
+    # compute the new bounding dimensions of the image  
+    nW = int((h * sin) + (w * cos))  
+    nH = int((h * cos) + (w * sin))  
+  
+    # adjust the rotation matrix to take into account translation  
+    M[0, 2] += (nW / 2) - cX  
+    M[1, 2] += (nH / 2) - cY  
+  
+    # perform the actual rotation and return the image  
+    return cv2.warpAffine(image, M, (nW, nH))  
 
 class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
@@ -62,6 +85,10 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.TMap.setScaledContents(True)
         self.SMap.setScaledContents(True)
+        pal = QPalette(self.PicBox.palette())
+        pal.setColor(QPalette.Background, QtCore.Qt.black)
+        self.PicBox.setAutoFillBackground(True)
+        self.PicBox.setPalette(pal)
         self.iface = iface
 
         #获取图层
@@ -172,15 +199,12 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
             self.pressPos = event.pos() - self.SMap.pos()
         
     def mouseMoveEvent(self,event):
-        if self.leftPressed != True or self.rightPressed != True:
+        if self.leftPressed != True and self.rightPressed != True:
             return
         #self.SMap.move
         self.SMap.move(event.pos() - self.pressPos)
 
     def mouseReleaseEvent(self,event):
-        child = self.childAt(event.pos())
-        if child != self.SMap:
-            return
         if(event.button() == QtCore.Qt.LeftButton):
             self.leftPressed = False
 
