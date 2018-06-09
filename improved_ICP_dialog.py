@@ -24,7 +24,7 @@
 
 import os
 import sys
-
+import math
 import numpy as np
 import cv2
 #from matplotlib import pyplot as plt
@@ -42,6 +42,14 @@ if __name__ == 'ImprovedICP.improved_ICP_dialog':
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'improved_ICP_dialog_base.ui'))
 MOOD = "test"
+
+def getAnglebyPos(pos):
+    if pos.x() == 0:
+        if pos.y() >= 0:
+            return 0.0
+        else:
+            return 180.0
+    return math.atan(pos.y()/pos.x())*180/math.pi
 
 def rotate_bound(image, angle):  
     # grab the dimensions of the image and then determine the  
@@ -120,13 +128,16 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
                     res[k,j,i] = ident.results()[i + 1]
         return res
 
-    def getQimagebyIndex(self, index):
+    def getQimagebyIndex(self, index, imageFor):
         """通过图层序号获取图层并保存"""
         canvas = self.iface.mapCanvas()
         layerList = canvas.layers()
         extent = layerList[index].extent()
         if MOOD == 'test':
-            self.narray = cv2.imread("D:\\Desktop\\TM\\bm.jpg")
+            if imageFor == 'Target':
+                self.narray = cv2.imread("D:\\Desktop\\TM\\bm.jpg")
+            else:
+                self.narray = cv2.imread("D:\\Desktop\\TM\\bm.jpg")
             img=cv2.cvtColor(self.narray,cv2.COLOR_BGRA2BGR)
         else:
             self.narray = self.getArrayfromLayer(layerList[index])
@@ -135,6 +146,10 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
             cv2.imwrite("D:\\Desktop\\bm.jpg",img2)
             img3 = cv2.imread("D:\\Desktop\\bm.jpg")
             img=cv2.cvtColor(img3,cv2.COLOR_BGRA2BGR)
+        if imageFor == 'Target':
+            self.Timage = img
+        else:
+            self.Simage = img
         img2=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
         _image = QImage(img2[:],img2.shape[1], img2.shape[0],(img2.shape[1]* 3)/4 * 4, QImage.Format_RGB888)
         
@@ -151,7 +166,7 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
             self.SourceName.setEnabled(True)
             self.OutputName.setEnabled(True)
             self.SelectOutputPath.setEnabled(True)
-            image = self.getQimagebyIndex(layerName - 1)
+            image = self.getQimagebyIndex(layerName - 1, 'Target')
             self.Tpixmap  = QPixmap.fromImage(image)
             #self.fitPixmap = pixmap.scaled(50, 50,aspectRatioMode = QtCore.Qt.KeepAspectRatio)#1 = Qtcore.Qt.KeepAspectRatio
             self.TMap.resize(150,self.Tpixmap.height()/self.Tpixmap.width()*150)
@@ -170,7 +185,7 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
         if type(layerName) == str:
             return
         if layerName > 0:
-            image = self.getQimagebyIndex(layerName - 1)
+            image = self.getQimagebyIndex(layerName - 1, "Source")
             self.Spixmap  = QPixmap.fromImage(image)
             #self.fitPixmap = pixmap.scaled(50, 50,aspectRatioMode = QtCore.Qt.KeepAspectRatio)#1 = Qtcore.Qt.KeepAspectRatio
             self.SMap.resize(150,self.Spixmap.height()/self.Spixmap.width()*150)
@@ -197,16 +212,42 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
         if(event.button() == QtCore.Qt.LeftButton):
             self.leftPressed = True
             self.pressPos = event.pos() - self.SMap.pos()
+        elif(event.button() == QtCore.Qt.RightButton):
+            self.rightPressed = True
+            self.pressPos = event.pos() - self.SMap.pos()
+            self.pressAngle = getAnglebyPos(self.pressPos)
         
     def mouseMoveEvent(self,event):
         if self.leftPressed != True and self.rightPressed != True:
             return
         #self.SMap.move
-        self.SMap.move(event.pos() - self.pressPos)
+        if self.leftPressed == True:
+            self.SMap.move(event.pos() - self.pressPos)
+        elif self.rightPressed == True:
+            nowPos = (event.pos() - self.pressPos)
+            angle = getAnglebyPos(nowPos) - self.pressAngle
+            rotateImg = rotate_bound(self.Simage,angle)
+            img2=cv2.cvtColor(rotateImg,cv2.COLOR_BGR2RGB)
+            _image = QImage(img2[:],img2.shape[1], img2.shape[0],(img2.shape[1]* 3)/4 * 4, QImage.Format_RGB888)
+            tempMap  = QPixmap.fromImage(_image)
+            self.SMap.resize(150,tempMap.height()/tempMap.width()*150)
+            self.SMap.move(self.PicBox.width()/2,self.PicBox.height()/2)
+            self.SMap.setPixmap(tempMap)
 
     def mouseReleaseEvent(self,event):
         if(event.button() == QtCore.Qt.LeftButton):
             self.leftPressed = False
+        if(event.button() == QtCore.Qt.RightButton):
+            self.rightPressed = False
+            # nowPos = (event.pos() - self.pressPos)
+            # angle = getAnglebyPos(nowPos) - self.pressAngle
+            # self.Simage = rotate_bound(self.Simage,angle)
+            # img2=cv2.cvtColor(self.Simage,cv2.COLOR_BGR2RGB)
+            # _image = QImage(img2[:],img2.shape[1], img2.shape[0],(img2.shape[1]* 3)/4 * 4, QImage.Format_RGB888)
+            # self.Spixmap  = QPixmap.fromImage(_image)
+            # self.SMap.resize(150,self.Spixmap.height()/self.Spixmap.width()*150)
+            # self.SMap.move(self.PicBox.width()/2,self.PicBox.height()/2)
+            # self.SMap.setPixmap(self.Spixmap)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
