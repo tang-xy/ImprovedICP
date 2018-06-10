@@ -29,6 +29,7 @@ from PyQt5.QtWidgets import QAction
 from .resources import *
 # Import the code for the dialog
 from .improved_ICP_dialog import ImprovedICPDialog
+from .Kmean_dialog import KMeanDialog
 import os.path
 
 
@@ -63,6 +64,7 @@ class ImprovedICP:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = ImprovedICPDialog()
+        self.dlg_kmean = KMeanDialog()
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&ImprovedICP')
@@ -165,8 +167,13 @@ class ImprovedICP:
         icon_path = ':/plugins/improved_ICP/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u''),
+            text=self.tr(u'ICP'),
             callback=self.run,
+            parent=self.iface.mainWindow())
+        self.add_action(
+            icon_path,
+            text=self.tr(u'K-mean'),
+            callback=self.runKmean,
             parent=self.iface.mainWindow())
 
 
@@ -188,6 +195,18 @@ class ImprovedICP:
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+
+    def runKmean(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.dlg_kmean.show()
+        # Run the dialog event loop
+        result = self.dlg_kmean.exec_()
         # See if OK was pressed
         if result:
             # Do something useful here - delete the line containing pass and

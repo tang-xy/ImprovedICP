@@ -16,6 +16,56 @@
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="0">
+      <widget class="QGroupBox" name="ConsoleBox">
+       <property name="title">
+        <string>console</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QGroupBox" name="ExtraBox">
+       <property name="title">
+        <string>advanced options</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="DxText">
+            <property name="text">
+             <string>Dx</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="Dx"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="DyText">
+            <property name="text">
+             <string>Dy</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="Dy"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>theta</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="Theta"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QGroupBox" name="BaseBox">
        <property name="title">
@@ -80,7 +130,7 @@
        </layout>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QDialogButtonBox" name="button_box">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -90,14 +140,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QGroupBox" name="ConsoleBox">
-       <property name="title">
-        <string>console</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" rowspan="4">
+     <item row="0" column="1" rowspan="5">
       <widget class="QGroupBox" name="PicBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -235,10 +278,10 @@
        <widget class="QLabel" name="TMap">
         <property name="geometry">
          <rect>
-          <x>50</x>
-          <y>160</y>
-          <width>261</width>
-          <height>150</height>
+          <x>10</x>
+          <y>22</y>
+          <width>16</width>
+          <height>16</height>
          </rect>
         </property>
         <property name="text">
@@ -250,8 +293,8 @@
          <rect>
           <x>120</x>
           <y>190</y>
-          <width>0</width>
-          <height>0</height>
+          <width>16</width>
+          <height>16</height>
          </rect>
         </property>
         <property name="text">
@@ -260,10 +303,10 @@
        </widget>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QGroupBox" name="ExtraBox">
-       <property name="title">
-        <string>advanced options</string>
+     <item row="3" column="0">
+      <widget class="QProgressBar" name="progressBar">
+       <property name="value">
+        <number>24</number>
        </property>
       </widget>
      </item>

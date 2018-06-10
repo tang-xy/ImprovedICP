@@ -191,6 +191,7 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
             self.SMap.resize(150,self.Spixmap.height()/self.Spixmap.width()*150)
             self.SMap.move(self.PicBox.width()/2,self.PicBox.height()/2)
             self.SMap.setPixmap(self.Spixmap)
+            
         if layerName == 0:
             self.Spixmap = QPixmap(0,0)
             self.SMap.setPixmap(self.Spixmap)
@@ -231,7 +232,6 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
             _image = QImage(img2[:],img2.shape[1], img2.shape[0],(img2.shape[1]* 3)/4 * 4, QImage.Format_RGB888)
             tempMap  = QPixmap.fromImage(_image)
             self.SMap.resize(150,tempMap.height()/tempMap.width()*150)
-            self.SMap.move(self.PicBox.width()/2,self.PicBox.height()/2)
             self.SMap.setPixmap(tempMap)
 
     def mouseReleaseEvent(self,event):
