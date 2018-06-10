@@ -27,6 +27,7 @@ import sys
 import math
 import numpy as np
 import cv2
+from .Icp import icp,afterImg
 #from matplotlib import pyplot as plt
 
 from PyQt5 import uic
@@ -36,12 +37,12 @@ from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QPixmap,QImage,QColor,QPainter,QPalette
 
 if __name__ == 'ImprovedICP.improved_ICP_dialog':
-    from qgis._core import QgsRasterLayer,QgsRasterViewPort,QgsPointXY,QgsRaster
+    from qgis._core import QgsRasterLayer,QgsRasterViewPort,QgsPointXY,QgsRaster,QgsProject
 
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'improved_ICP_dialog_base.ui'))
-MOOD = "test"
+MOOD = "res"
 
 def getAnglebyPos(pos):
     if pos.x() == 0:
@@ -75,6 +76,7 @@ def rotate_bound(image, angle):
     # perform the actual rotation and return the image  
     return cv2.warpAffine(image, M, (nW, nH))  
 
+MOOD = "test"
 class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
@@ -206,6 +208,15 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
         else :
             self.OutputName.setText(fileName[0])
 
+    def on_begin_clicked(self, bol = 2):
+        if bol == 2:
+            return
+        theta,dx,dy = icp(self.Timage,self.Simage,float(self.Theta.text()), float(self.Dx.text()), float(self.Dy.text()))
+        res = afterImage(theta,dx,dy)
+        cv2.imwrite(self.layerName.text(),res)
+        layer = QgsRasterLayer(self.layerName.text(),'result')
+        QgsProject.instance().addMapLayer(layer)
+
     def mousePressEvent(self,event):
         child = self.childAt(event.pos())
         if child != self.SMap:
@@ -224,6 +235,8 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
         #self.SMap.move
         if self.leftPressed == True:
             self.SMap.move(event.pos() - self.pressPos)
+            self.Dx.setText(str(self.SMap.pos().x()-self.PicBox.width()/2))
+            self.Dy.setText(str(self.SMap.pos().y()-self.PicBox.height()/2))
         elif self.rightPressed == True:
             nowPos = (event.pos() - self.pressPos)
             angle = getAnglebyPos(nowPos) - self.pressAngle
