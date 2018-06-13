@@ -151,16 +151,6 @@
        </layout>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QDialogButtonBox" name="button_box">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1" rowspan="5">
       <widget class="QGroupBox" name="PicBox">
        <property name="sizePolicy">
@@ -322,6 +312,8 @@
          <string/>
         </property>
        </widget>
+       <zorder>SMap</zorder>
+       <zorder>TMap</zorder>
       </widget>
      </item>
      <item row="3" column="0">
@@ -331,45 +323,19 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="begin">
+       <property name="text">
+        <string>计算</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>button_box</sender>
-   <signal>accepted()</signal>
-   <receiver>ImprovedICPDialogBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>10</x>
-     <y>501</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>button_box</sender>
-   <signal>rejected()</signal>
-   <receiver>ImprovedICPDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>10</x>
-     <y>501</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>slot1()</slot>
  </slots>

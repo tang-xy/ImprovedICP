@@ -137,9 +137,9 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
         extent = layerList[index].extent()
         if MOOD == 'test':
             if imageFor == 'Target':
-                self.narray = cv2.imread("D:\\Desktop\\TM\\bm.jpg")
+                self.narray = cv2.imread("D:\\Desktop\\opensourcegis\\bm1.jpg")
             else:
-                self.narray = cv2.imread("D:\\Desktop\\TM\\bm.jpg")
+                self.narray = cv2.imread("D:\\Desktop\\opensourcegis\\bm2.jpg")
             img=cv2.cvtColor(self.narray,cv2.COLOR_BGRA2BGR)
         else:
             self.narray = self.getArrayfromLayer(layerList[index])
@@ -207,14 +207,19 @@ class ImprovedICPDialog(QtWidgets.QDialog, FORM_CLASS):
             pass
         else :
             self.OutputName.setText(fileName[0])
+    def on_OutputName_textChanged(self, name):
+        if self.OutputName.text() == '':
+            self.begin.setEnabled(False)
+        else:
+            self.begin.setEnabled(True)
 
     def on_begin_clicked(self, bol = 2):
         if bol == 2:
             return
         theta,dx,dy = icp(self.Timage,self.Simage,float(self.Theta.text()), float(self.Dx.text()), float(self.Dy.text()))
-        res = afterImage(theta,dx,dy)
-        cv2.imwrite(self.layerName.text(),res)
-        layer = QgsRasterLayer(self.layerName.text(),'result')
+        res = afterImg(theta,dx,dy)
+        cv2.imwrite(self.OutputName.text(),res)
+        layer = QgsRasterLayer(self.OutputName.text(),'ICP_result')
         QgsProject.instance().addMapLayer(layer)
 
     def mousePressEvent(self,event):
